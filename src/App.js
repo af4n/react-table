@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import Loader from "./components/Loader/Loader";
+import Table from "./components/Table/Table";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component{
+
+  state = {
+    isLoading: true,
+    data: []
+  }
+
+  async componentDidMount() {
+    const response = await fetch(`http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}`)
+    const data = await response.json()
+
+    this.setState({
+      isLoading: false,
+      data: data
+    })
+  }
+
+  render() {
+    return (
+      <div className="container">
+        {
+          this.state.isLoading
+            ? <Loader />
+            : <Table
+                data={this.state.data}/>
+        }
+      </div>
+    );
+  }
 }
 
-export default App;
+export default App
+
