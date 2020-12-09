@@ -1,12 +1,18 @@
 import React from 'react'
+import _ from 'lodash'
 import Loader from "./components/Loader/Loader";
 import Table from "./components/Table/Table";
+import DetailRowView from "./components/DetailRowView/DetailRowView";
 
 class App extends React.Component{
 
   state = {
     isLoading: true,
-    data: []
+    data: [],
+    sort: 'asc', // desk
+    sortField: 'id',
+    row: null
+
   }
 
   async componentDidMount() {
@@ -15,8 +21,25 @@ class App extends React.Component{
 
     this.setState({
       isLoading: false,
-      data: data
+      data: _.orderBy(data, this.state.sortField, this.state.sort)
     })
+  }
+
+  onSort = sortField => {
+    const clonedData = this.state.data.concat()
+    const sortType = this.state.sort === 'asc' ? 'desc' : 'asc'
+
+    const orderedData = _.orderBy(clonedData, sortField, sortType)
+
+    this.setState({
+      data: orderedData,
+      sort: sortType,
+      sortField: sortField
+    })
+  }
+
+  onRowSelect = row => {
+    this.setState({row})
   }
 
   render() {
@@ -26,7 +49,18 @@ class App extends React.Component{
           this.state.isLoading
             ? <Loader />
             : <Table
-                data={this.state.data}/>
+                data={this.state.data}
+                onSort={this.onSort}
+                sort={this.state.sort}
+                sortField={this.state.sortField}
+                onRowSelect={this.onRowSelect}
+            />
+        }
+
+        {
+          this.state.row
+            ? <DetailRowView person={this.state.row} />
+            : null
         }
       </div>
     );
