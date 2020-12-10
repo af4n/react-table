@@ -3,11 +3,13 @@ import _ from 'lodash'
 import Loader from "./components/Loader/Loader";
 import Table from "./components/Table/Table";
 import DetailRowView from "./components/DetailRowView/DetailRowView";
+import ModeSelector from "./components/ModeSelector/ModeSelector";
 
 class App extends React.Component{
 
   state = {
-    isLoading: true,
+    isModeSelected: false,
+    isLoading: false,
     data: [],
     sort: 'asc', // desk
     sortField: 'id',
@@ -15,8 +17,8 @@ class App extends React.Component{
 
   }
 
-  async componentDidMount() {
-    const response = await fetch(`http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}`)
+  async fetchData(url) {
+    const response = await fetch(url)
     const data = await response.json()
 
     this.setState({
@@ -27,15 +29,24 @@ class App extends React.Component{
 
   onSort = sortField => {
     const clonedData = this.state.data.concat()
-    const sortType = this.state.sort === 'asc' ? 'desc' : 'asc'
+    const sort = this.state.sort === 'asc' ? 'desc' : 'asc'
 
-    const orderedData = _.orderBy(clonedData, sortField, sortType)
+    const data = _.orderBy(clonedData, sortField, sort)
 
     this.setState({
-      data: orderedData,
-      sort: sortType,
+      data: data,
+      sort: sort,
       sortField: sortField
     })
+  }
+
+  modeSelectHandler = url => {
+    this.setState({
+      isModeSelected: true,
+      isLoading: true
+    })
+
+    this.fetchData(url)
   }
 
   onRowSelect = row => {
@@ -43,6 +54,14 @@ class App extends React.Component{
   }
 
   render() {
+    if (!this.state.isModeSelected) {
+      return (
+        <div className="container">
+          <ModeSelector onSelect={this.modeSelectHandler} />
+        </div>
+      )
+    }
+
     return (
       <div className="container">
         {
