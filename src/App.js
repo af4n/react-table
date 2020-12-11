@@ -1,5 +1,6 @@
-import React from 'react'
-import _ from 'lodash'
+import React from 'react';
+import _ from 'lodash';
+import ReactPaginate from 'react-paginate';
 import Loader from "./components/Loader/Loader";
 import Table from "./components/Table/Table";
 import DetailRowView from "./components/DetailRowView/DetailRowView";
@@ -13,8 +14,8 @@ class App extends React.Component{
     data: [],
     sort: 'asc', // desk
     sortField: 'id',
-    row: null
-
+    row: null,
+    currentPage: 0
   }
 
   async fetchData(url) {
@@ -53,7 +54,13 @@ class App extends React.Component{
     this.setState({row})
   }
 
+  pageChangeHandler = ({selected}) => {
+    this.setState({currentPage: selected})
+  }
+
   render() {
+    const pageSize = 50
+
     if (!this.state.isModeSelected) {
       return (
         <div className="container">
@@ -62,18 +69,45 @@ class App extends React.Component{
       )
     }
 
+    const displayData = _.chunk(this.state.data, pageSize)[this.state.currentPage]
+
     return (
       <div className="container">
         {
           this.state.isLoading
             ? <Loader />
             : <Table
-                data={this.state.data}
+                data={displayData}
                 onSort={this.onSort}
                 sort={this.state.sort}
                 sortField={this.state.sortField}
                 onRowSelect={this.onRowSelect}
             />
+        }
+
+        {
+          this.state.data.length > pageSize
+            ? <ReactPaginate
+                previousLabel={'<'}
+                nextLabel={'>'}
+                breakLabel={'...'}
+                pageCount={20}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={this.pageChangeHandler}
+                containerClassName={'pagination'}
+                activeClassName={'active'}
+                pageClassName={'page-item'}
+                pageLinkClassName={'page-link'}
+                previousClassName={'page-item'}
+                nextClassName={'page-item'}
+                previousLinkClassName={'page-link'}
+                nextLinkClassName={'page-link'}
+                breakClassName={'page-item'}
+                breakLinkClassName={'page-link'}
+                forcePage={this.state.currentPage}
+              />
+            : null
         }
 
         {

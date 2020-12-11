@@ -3,7 +3,7 @@ import React from 'react'
 export default props => (
   <table className="table">
     <thead>
-      <tr>
+      <tr style={{cursor: 'pointer'}}>
         <th onClick={props.onSort.bind(null, 'id')}>
           ID {props.sortField === 'id' ? <small>{props.sort}</small> : null}</th>
         <th onClick={props.onSort.bind(null, 'firstName')}>
