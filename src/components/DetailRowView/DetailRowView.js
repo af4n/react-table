@@ -2,6 +2,10 @@ import React from 'react'
 
 export default ({person}) => (
   <div>
+    <button
+      type="button"
+      className="close"
+    ><span aria-hidden="true">&times;</span></button>
     <p>Выбран пользователь: <b>{person.firstName + ' ' + person.lastName}</b></p>
     <p>
       Описание: <br/>

@@ -1,0 +1,13 @@
+.page-item .page-link {
+    color: #343a40!important;
+}
+
+.page-item.active .page-link {
+    color: #fff!important;
+    background-color: #343a40!important;
+    border-color: #343a40!important;
+}
+
+.page-link:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 55, 55, .25)!important;
+}
